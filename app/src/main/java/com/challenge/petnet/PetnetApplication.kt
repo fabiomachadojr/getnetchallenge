@@ -1,13 +1,10 @@
 package com.challenge.petnet
 
 import android.app.Application
-import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
-import com.challenge.petnet.presentation.detail.viewmodel.ItemDetailViewModel
-import com.challenge.petnet.presentation.home.viewmodel.HomeViewModel
+import com.challenge.petnet.di.appModule
+import com.challenge.petnet.di.networkModule
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext.startKoin
-import org.koin.dsl.module
 
 class PetnetApplication : Application() {
 
@@ -15,13 +12,7 @@ class PetnetApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@PetnetApplication)
-            modules(appModule)
+            modules(listOf(appModule, networkModule))
         }
     }
-}
-
-val appModule = module {
-    viewModel { HomeViewModel() }
-    viewModel { ItemDetailViewModel() }
-    viewModel { CartViewModel() }
 }

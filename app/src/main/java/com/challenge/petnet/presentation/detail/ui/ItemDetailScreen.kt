@@ -29,8 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.challenge.petnet.domain.model.CartItem
 import com.challenge.petnet.domain.model.Item
-import com.challenge.petnet.presentation.cart.viewmodel.CartItem
 import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
 import com.challenge.petnet.presentation.detail.viewmodel.ItemDetailViewModel
 import org.koin.androidx.compose.getViewModel
