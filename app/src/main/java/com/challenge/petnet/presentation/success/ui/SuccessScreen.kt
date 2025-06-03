@@ -1,9 +1,6 @@
 package com.challenge.petnet.presentation.success.ui
 
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.challenge.petnet.core.utils.getInstalledWhatsAppPackage
+import com.challenge.petnet.core.utils.isEmailClientAvailable
 
 @Composable
 fun SuccessScreen(message: String, onBackToHome: () -> Unit) {
@@ -123,28 +121,4 @@ fun ShareOptions(message: String) {
         }
     }
 }
-
-
-fun isWhatsAppInstalled(context: Context): Boolean {
-    val packages = listOf("com.whatsapp", "com.whatsapp.w4b")
-    packages.forEach { pkg ->
-        try {
-            context.packageManager.getPackageInfo(pkg, 0)
-            Log.d("ShareTest", "Found WhatsApp package: $pkg")
-            return true
-        } catch (e: PackageManager.NameNotFoundException) {
-            Log.d("ShareTest", "Package not found: $pkg")
-        }
-    }
-    return false
-}
-
-
-fun isEmailClientAvailable(context: Context): Boolean {
-    val intent = Intent(Intent.ACTION_SENDTO).apply {
-        data = "mailto:".toUri()
-    }
-    return intent.resolveActivity(context.packageManager) != null
-}
-
 

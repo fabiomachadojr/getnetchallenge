@@ -6,7 +6,7 @@ import com.challenge.petnet.domain.repository.PetRepository
 class GetDetailItemUseCase(
     private val repository: PetRepository
 ) {
-    suspend operator fun invoke(id: String): DetailItem {
+    suspend operator fun invoke(id: String): Result<DetailItem> {
         return repository.getItemDetail(id)
     }
 }

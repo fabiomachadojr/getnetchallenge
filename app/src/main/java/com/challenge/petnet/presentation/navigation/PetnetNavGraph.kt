@@ -75,6 +75,7 @@ fun PetnetNavGraph(navController: NavHostController) {
             ) { backStackEntry ->
                 val message = backStackEntry.arguments?.getString("message") ?: ""
                 val cartViewModel = rememberCartViewModel(navController, backStackEntry)
+
                 SuccessScreen(
                     message = message,
                     onBackToHome = {

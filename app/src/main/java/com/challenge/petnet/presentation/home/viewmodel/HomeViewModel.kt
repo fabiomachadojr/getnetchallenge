@@ -2,6 +2,7 @@ package com.challenge.petnet.presentation.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.challenge.petnet.core.ui.state.UiState
 import com.challenge.petnet.domain.model.Item
 import com.challenge.petnet.domain.usecase.GetItemsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,20 +11,34 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val getItemsUseCase: GetItemsUseCase) : ViewModel() {
 
-    private val _items = MutableStateFlow<List<Item>>(emptyList())
-    val items: StateFlow<List<Item>> = _items
+    private val _itemsState = MutableStateFlow<UiState<List<Item>>>(UiState.Loading)
+    val itemsState: StateFlow<UiState<List<Item>>> = _itemsState
+
+    private var allItems: List<Item> = emptyList()
 
     init {
         loadItems()
     }
 
-    private fun loadItems() {
+    fun loadItems() {
         viewModelScope.launch {
-            try {
-                _items.value = getItemsUseCase()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            _itemsState.value = UiState.Loading
+            val result = getItemsUseCase()
+            _itemsState.value = result.fold(
+                onSuccess = { UiState.Success(it) },
+                onFailure = { UiState.Error(it.message ?: "Erro desconhecido") }
+            )
         }
     }
+
+
+    fun searchItems(query: String) {
+        val filtered = if (query.isBlank()) {
+            allItems
+        } else {
+            allItems.filter { it.description.contains(query, ignoreCase = true) }
+        }
+        _itemsState.value = UiState.Success(filtered)
+    }
+
 }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,8 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.challenge.petnet.core.ui.state.UiState
+import com.challenge.petnet.data.mapper.toItem
 import com.challenge.petnet.domain.model.CartItem
-import com.challenge.petnet.domain.model.Item
 import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
 import com.challenge.petnet.presentation.detail.viewmodel.ItemDetailViewModel
 import org.koin.androidx.compose.getViewModel
@@ -43,104 +45,121 @@ fun ItemDetailScreen(
     cartViewModel: CartViewModel,
     onBackClick: () -> Unit
 ) {
-    val item by viewModel.item.collectAsState()
+
+    val itemState by viewModel.itemState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadItem(itemId)
     }
 
-    if (item == null) {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
+    when (itemState) {
+        is UiState.Loading -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
-    } else {
-        Scaffold(
-            containerColor = Color.White,
-            topBar = {
-                TopAppBar(
-                    title = { Text("Detalhes do Item") },
-                    navigationIcon = {
-                        IconButton(onClick = onBackClick) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Red,
-                        titleContentColor = Color.White,
-                        navigationIconContentColor = Color.White
-                    )
-                )
-            },
-            bottomBar = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .background(Color.Green)
-                        .clickable {
-                            cartViewModel.addToCart(
-                                CartItem(
-                                    item = Item(
-                                        "1",
-                                        "Casa DuraPets Dura House Preta para Cães",
-                                        "R$ 54,39",
-                                        "https://images.petz.com.br/fotos/10031600000710-2.jpg"
-                                    ), quantity = 1
-                                )
-                            )
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = "Adicionar", color = Color.White)
+
+        is UiState.Error -> {
+            val error = (itemState as UiState.Error).message
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = error, color = Color.Red)
+                    Spacer(Modifier.height(8.dp))
+                    Button(onClick = { viewModel.loadItem(itemId) }) {
+                        Text("Tentar novamente")
+                    }
                 }
-            },
-            content = { innerPadding ->
-                Column(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                ) {
-                    Column(
+            }
+        }
+
+        is UiState.Success -> {
+            val item = (itemState as UiState.Success).data
+
+            Scaffold(
+                containerColor = Color.White,
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Detalhes do Item") },
+                        navigationIcon = {
+                            IconButton(onClick = onBackClick) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Voltar"
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Red,
+                            titleContentColor = Color.White,
+                            navigationIconContentColor = Color.White
+                        )
+                    )
+                },
+                bottomBar = {
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.White)
-                            .padding(start = 16.dp, end = 16.dp)
+                            .height(80.dp)
+                            .background(Color.Green)
+                            .clickable {
+                                cartViewModel.addToCart(
+                                    CartItem(item = item.toItem(), quantity = 1)
+                                )
+                            },
+                        contentAlignment = Alignment.Center
                     ) {
-                        AsyncImage(
-                            model = item!!.imageUrl,
-                            contentDescription = item!!.description,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(300.dp)
-                        )
+                        Text(text = "Adicionar", color = Color.White)
                     }
-                    Spacer(Modifier.height(16.dp))
+                },
+                content = { innerPadding ->
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.LightGray)
-                            .padding(start = 16.dp, end = 16.dp)
+                            .padding(innerPadding)
                     ) {
-                        Text(
-                            color = Color.Black,
-                            text = item!!.description,
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            color = Color.Black,
-                            text = item!!.price,
-                            style = MaterialTheme.typography.titleLarge
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.White)
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            AsyncImage(
+                                model = item.imageUrl,
+                                contentDescription = item.description,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                            )
+                        }
+
                         Spacer(Modifier.height(16.dp))
-                        Text(
-                            color = Color.Black,
-                            text = "Descrição do item...",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.LightGray)
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Text(
+                                color = Color.Black,
+                                text = item.description,
+                                style = MaterialTheme.typography.headlineSmall
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                color = Color.Black,
+                                text = item.price,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            Text(
+                                color = Color.Black,
+                                text = "Descrição do item...",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                     }
                 }
-
-            }
-        )
+            )
+        }
     }
 }
