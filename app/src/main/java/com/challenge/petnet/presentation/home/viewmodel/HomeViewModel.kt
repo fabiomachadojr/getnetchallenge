@@ -25,7 +25,9 @@ class HomeViewModel(private val getItemsUseCase: GetItemsUseCase) : ViewModel() 
             _itemsState.value = UiState.Loading
             val result = getItemsUseCase()
             _itemsState.value = result.fold(
-                onSuccess = { UiState.Success(it) },
+                onSuccess = {
+                    allItems = it
+                    UiState.Success(it) },
                 onFailure = { UiState.Error(it.message ?: "Erro desconhecido") }
             )
         }
