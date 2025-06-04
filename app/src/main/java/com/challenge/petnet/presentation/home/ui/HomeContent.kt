@@ -52,8 +52,9 @@ fun HomeContent(
 
     var searchQuery by remember { mutableStateOf("") }
 
-    val cartItems by cartViewModel.cartItems.collectAsState()
-    val totalItems = cartItems.sumOf { it.quantity }
+    val totalItems by cartViewModel.totalItems.collectAsState()
+    val totalPrice by cartViewModel.totalPrice.collectAsState()
+
 
     Column(
         modifier = Modifier
@@ -134,7 +135,7 @@ fun HomeContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "TOTAL:\n ${cartViewModel.getTotalPrice().toBrazilCurrency()}",
+                    text = "TOTAL:\n ${totalPrice.toBrazilCurrency()}",
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge
                 )

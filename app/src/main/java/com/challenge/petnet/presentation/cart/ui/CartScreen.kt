@@ -46,13 +46,15 @@ fun CartScreen(
     onFinish: () -> Unit
 ) {
     val cartItems by viewModel.cartItems.collectAsState()
+    val totalItems by viewModel.totalItems.collectAsState()
+    val totalPrice by viewModel.totalPrice.collectAsState()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Meu carrinho(${viewModel.getTotalItems()})",
+                        text = "Meu carrinho(${totalItems})",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 },
@@ -101,7 +103,7 @@ fun CartScreen(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
-                        viewModel.getTotalPrice().toBrazilCurrency(),
+                        totalPrice.toBrazilCurrency(),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -111,10 +113,16 @@ fun CartScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(80.dp)
-                        .background(AppColors.Success)
-                        .clickable {
-                            onFinish()
-                        },
+                        .background(
+                            if (cartItems.isNotEmpty()) AppColors.Success else Color.Gray
+                        )
+                        .then(
+                            if (cartItems.isNotEmpty()) {
+                                Modifier.clickable { onFinish() }
+                            } else {
+                                Modifier
+                            }
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -153,11 +161,21 @@ fun CartScreen(
                                 maxLines = 2
                             )
                             Spacer(Modifier.height(4.dp))
-                            Text(
-                                viewModel.getTotalPrice().toBrazilCurrency(),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    "Quantidade: ${cartItem.quantity}",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    totalPrice.toBrazilCurrency(),
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
                         }
                     }
                 }
