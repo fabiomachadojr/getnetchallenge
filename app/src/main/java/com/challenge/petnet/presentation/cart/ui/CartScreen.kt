@@ -1,6 +1,9 @@
 package com.challenge.petnet.presentation.cart.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,53 +15,111 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.challenge.petnet.core.extensions.toBrazilCurrency
+import com.challenge.petnet.core.ui.theme.AppColors
 import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
     viewModel: CartViewModel,
+    onBack: () -> Unit,
     onFinish: () -> Unit
 ) {
     val cartItems by viewModel.cartItems.collectAsState()
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Carrinho") }
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Meu carrinho(${viewModel.getTotalItems()})",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onBack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.clearCart()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Limpar carrinho",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         },
         bottomBar = {
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .background(MaterialTheme.colorScheme.onBackground)
             ) {
-                Text(
-                    "Total: ${viewModel.getTotalPrice()}",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = onFinish,
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier
+                        .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 16.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Finalizar Pedido")
+                    Text(
+                        "Total:",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Text(
+                        viewModel.getTotalPrice().toBrazilCurrency(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .background(AppColors.Success)
+                        .clickable {
+                            onFinish()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Finalizar", color = Color.White
+                    )
                 }
             }
         }
@@ -70,11 +131,12 @@ fun CartScreen(
                 .background(Color(0xFFF2F2F2))
         ) {
             items(cartItems) { cartItem ->
-                Card(
+                Spacer(Modifier.height(6.dp))
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        .background(Color.White)
+                        .padding(8.dp)
                 ) {
                     Row(modifier = Modifier.padding(16.dp)) {
                         AsyncImage(
@@ -84,10 +146,16 @@ fun CartScreen(
                         )
                         Spacer(Modifier.width(16.dp))
                         Column {
-                            Text(viewModel.getTotalPrice().toString(), maxLines = 2)
+                            Text(
+                                cartItem.item.description,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.bodyMedium,
+                                maxLines = 2
+                            )
                             Spacer(Modifier.height(4.dp))
                             Text(
-                                viewModel.getTotalPrice().toString(),
+                                viewModel.getTotalPrice().toBrazilCurrency(),
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 style = MaterialTheme.typography.titleMedium
                             )
                         }

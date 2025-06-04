@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,8 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.challenge.petnet.core.ui.state.UiState
+import com.challenge.petnet.core.ui.theme.AppColors
 import com.challenge.petnet.data.mapper.toItem
 import com.challenge.petnet.domain.model.CartItem
 import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
@@ -76,10 +78,15 @@ fun ItemDetailScreen(
             val item = (itemState as UiState.Success).data
 
             Scaffold(
-                containerColor = Color.White,
+                containerColor = MaterialTheme.colorScheme.onBackground,
                 topBar = {
-                    TopAppBar(
-                        title = { Text("Detalhes do Item") },
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Text(
+                                text = "Detalhes do item",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        },
                         navigationIcon = {
                             IconButton(onClick = onBackClick) {
                                 Icon(
@@ -89,7 +96,7 @@ fun ItemDetailScreen(
                             }
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Red,
+                            containerColor = MaterialTheme.colorScheme.primary,
                             titleContentColor = Color.White,
                             navigationIconContentColor = Color.White
                         )
@@ -100,15 +107,18 @@ fun ItemDetailScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(80.dp)
-                            .background(Color.Green)
+                            .background(AppColors.Success)
                             .clickable {
                                 cartViewModel.addToCart(
                                     CartItem(item = item.toItem(), quantity = 1)
                                 )
+                                onBackClick()
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "Adicionar", color = Color.White)
+                        Text(
+                            text = "Adicionar", color = Color.White
+                        )
                     }
                 },
                 content = { innerPadding ->
@@ -119,8 +129,7 @@ fun ItemDetailScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color.White)
-                                .padding(horizontal = 16.dp)
+                                .padding(all = 16.dp)
                         ) {
                             AsyncImage(
                                 model = item.imageUrl,
@@ -136,15 +145,20 @@ fun ItemDetailScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(Color.LightGray)
+                                .background(MaterialTheme.colorScheme.background)
                                 .padding(horizontal = 16.dp)
                         ) {
+                            Spacer(Modifier.height(16.dp))
+
                             Text(
                                 color = Color.Black,
                                 text = item.description,
-                                style = MaterialTheme.typography.headlineSmall
+                                style = MaterialTheme.typography.headlineSmall.copy(
+                                    lineHeight = 24.sp,
+                                    letterSpacing = 0.sp
+                                )
                             )
-                            Spacer(Modifier.height(8.dp))
+                            Spacer(Modifier.height(16.dp))
                             Text(
                                 color = Color.Black,
                                 text = item.price,
@@ -153,7 +167,21 @@ fun ItemDetailScreen(
                             Spacer(Modifier.height(16.dp))
                             Text(
                                 color = Color.Black,
-                                text = "Descrição do item...",
+                                text = "- Com capacidade significativa de armazenamento de água;\n" +
+                                        "- Fabricado em plástico resistente, leve e fácil de transportar;\n" +
+                                        "- Prático, higiênico e combina com a decoração do ambiente;",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                color = Color.Black,
+                                text = "Peso: 900g",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                color = Color.Black,
+                                text = "Dimensão: 100x70x200",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }

@@ -60,7 +60,6 @@ fun HomeContent(
             .fillMaxSize()
             .background(Color(0xFFF2F2F3))
     ) {
-
         Spacer(modifier = Modifier.height(22.dp))
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -80,41 +79,41 @@ fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(horizontal = 16.dp)
         )
 
-
-        when (itemsState) {
-            is UiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            when (itemsState) {
+                is UiState.Loading -> {
                     CircularProgressIndicator()
                 }
-            }
 
-            is UiState.Success -> {
-                val items: List<Item> = (itemsState as UiState.Success).data
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(all = 16.dp)
-                ) {
-                    items(items) { item ->
-                        ItemCard(
-                            item = item,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp),
-                            onClick = { onItemClick(item.id) }
-                        )
+                is UiState.Success -> {
+                    val items: List<Item> = (itemsState as UiState.Success).data
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(16.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(items) { item ->
+                            ItemCard(
+                                item = item,
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { onItemClick(item.id) }
+                            )
+                        }
                     }
                 }
-            }
 
-            is UiState.Error -> {
-                val errorMessage = (itemsState as UiState.Error).message
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                is UiState.Error -> {
+                    val errorMessage = (itemsState as UiState.Error).message
                     Text(text = errorMessage)
                 }
             }
@@ -124,7 +123,7 @@ fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(80.dp)
-                .background(Color.Red),
+                .background(MaterialTheme.colorScheme.primary),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -135,7 +134,7 @@ fun HomeContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "TOTAL:\nR$ ${cartViewModel.getTotalPrice().toBrazilCurrency()}",
+                    text = "TOTAL:\n ${cartViewModel.getTotalPrice().toBrazilCurrency()}",
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -148,10 +147,7 @@ fun HomeContent(
                     .weight(0.6f)
                     .fillMaxWidth()
             ) {
-                CartButton(itemCount = totalItems, onClick = {
-                    goCartScreen()
-                })
-
+                CartButton(itemCount = totalItems, onClick = goCartScreen)
             }
         }
     }

@@ -2,7 +2,6 @@ package com.challenge.petnet.presentation.cart.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.challenge.petnet.domain.model.CartItem
-import com.challenge.petnet.domain.model.Item
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.math.BigDecimal
@@ -21,17 +20,6 @@ class CartViewModel : ViewModel() {
         } else {
             _cartItems.value + cartItem
         }
-    }
-
-    fun removeFromCart(item: Item) {
-        _cartItems.value = _cartItems.value
-            .mapNotNull {
-                when {
-                    it.item.id != item.id -> it
-                    it.quantity > 1 -> it.copy(quantity = it.quantity - 1)
-                    else -> null
-                }
-            }
     }
 
     fun clearCart() {
@@ -57,8 +45,13 @@ class CartViewModel : ViewModel() {
 
         val sb = StringBuilder("Compra realizada com sucesso!\n\nItens:\n")
         _cartItems.value.forEach {
-            sb.append("- ${it.item.description} x${it.quantity} = R$ ${"%.2f".format(
-                it.item.price.replace("R$", "").replace(",", ".").toDouble() * it.quantity)}\n")
+            sb.append(
+                "- ${it.item.description} x${it.quantity} = R$ ${
+                    "%.2f".format(
+                        it.item.price.replace("R$", "").replace(",", ".").toDouble() * it.quantity
+                    )
+                }\n"
+            )
         }
         sb.append("\nTotal: R$ ${"%.2f".format(getTotalPrice())}")
         return sb.toString()

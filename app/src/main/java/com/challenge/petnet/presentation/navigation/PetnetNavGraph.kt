@@ -16,24 +16,18 @@ import com.challenge.petnet.presentation.success.ui.SuccessScreen
 @Composable
 fun PetnetNavGraph(navController: NavHostController) {
     NavHost(
-        navController = navController,
-        startDestination = Routes.MAIN
+        navController = navController, startDestination = Routes.MAIN
     ) {
         navigation(
-            startDestination = Routes.HOME,
-            route = Routes.MAIN
+            startDestination = Routes.HOME, route = Routes.MAIN
         ) {
 
             composable(Routes.HOME) { backStackEntry ->
                 val cartViewModel = rememberCartViewModel(navController, backStackEntry)
 
-                HomeContent(
-                    cartViewModel = cartViewModel,
-                    onItemClick = { itemId ->
-                        navController.navigate("${Routes.DETAIL}/$itemId")
-                    },
-                    goCartScreen = { navController.navigate(Routes.CART) }
-                )
+                HomeContent(cartViewModel = cartViewModel, onItemClick = { itemId ->
+                    navController.navigate("${Routes.DETAIL}/$itemId")
+                }, goCartScreen = { navController.navigate(Routes.CART) })
             }
 
             composable(
@@ -46,8 +40,7 @@ fun PetnetNavGraph(navController: NavHostController) {
                 ItemDetailScreen(
                     itemId = itemId,
                     cartViewModel = cartViewModel,
-                    onBackClick = { navController.popBackStack() }
-                )
+                    onBackClick = { navController.popBackStack() })
             }
 
             composable(Routes.CART) { backStackEntry ->
@@ -55,34 +48,30 @@ fun PetnetNavGraph(navController: NavHostController) {
 
                 CartScreen(
                     viewModel = cartViewModel,
+                    onBack = { navController.popBackStack() },
                     onFinish = {
                         val message = cartViewModel.buildSuccessMessage()
                         val encodedMessage = Uri.encode(message)
                         navController.navigate("${Routes.SUCCESS}?message=$encodedMessage")
-                    }
-                )
+                    })
             }
 
             composable(
-                route = "${Routes.SUCCESS}?message={message}",
-                arguments = listOf(
+                route = "${Routes.SUCCESS}?message={message}", arguments = listOf(
                     navArgument("message") {
                         type = NavType.StringType
                         defaultValue = ""
                         nullable = true
-                    }
-                )
+                    })
             ) { backStackEntry ->
                 val message = backStackEntry.arguments?.getString("message") ?: ""
                 val cartViewModel = rememberCartViewModel(navController, backStackEntry)
 
                 SuccessScreen(
-                    message = message,
-                    onBackToHome = {
+                    message = message, onBackToHome = {
                         cartViewModel.clearCart()
                         navController.popBackStack(Routes.HOME, inclusive = false)
-                    }
-                )
+                    })
             }
         }
     }
