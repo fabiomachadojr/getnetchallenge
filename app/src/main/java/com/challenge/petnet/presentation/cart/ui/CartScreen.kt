@@ -99,7 +99,7 @@ fun CartScreen(
                 ) {
                     Text(
                         "Total:",
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Text(
@@ -162,8 +162,9 @@ fun CartScreen(
                             )
                             Spacer(Modifier.height(4.dp))
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     "Quantidade: ${cartItem.quantity}",

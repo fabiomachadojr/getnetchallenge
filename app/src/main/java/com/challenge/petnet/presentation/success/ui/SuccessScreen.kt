@@ -3,6 +3,7 @@ package com.challenge.petnet.presentation.success.ui
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,40 +31,45 @@ import com.challenge.petnet.core.utils.isEmailClientAvailable
 
 @Composable
 fun SuccessScreen(message: String, onBackToHome: () -> Unit) {
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF2F2F2))
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(32.dp)
     ) {
-        Icon(
-            imageVector = Icons.Default.CheckCircle,
-            contentDescription = "Sucesso",
-            tint = Color(0xFF4CAF50),
-            modifier = Modifier.size(96.dp)
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 72.dp), // espaço para o botão
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Default.CheckCircle,
+                contentDescription = "Sucesso",
+                tint = Color(0xFF4CAF50),
+                modifier = Modifier.size(96.dp)
+            )
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = "Pedido realizado com sucesso!",
-            style = MaterialTheme.typography.headlineSmall
-        )
+            Text(
+                text = "Pedido realizado com sucesso!",
+                style = MaterialTheme.typography.bodyLarge
+            )
 
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        ShareOptions(message = message)
-
-        Spacer(modifier = Modifier.height(12.dp))
+            ShareOptions(message = message)
+        }
 
         OutlinedButton(
             onClick = onBackToHome,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
         ) {
-            Text("Voltar para a Home")
+            Text("Fechar")
         }
     }
 }
@@ -80,7 +86,8 @@ fun ShareOptions(message: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         whatsappPackage?.let { pkg ->
             Button(onClick = {
@@ -91,7 +98,7 @@ fun ShareOptions(message: String) {
                 }
                 context.startActivity(intent)
             }) {
-                Text("Compartilhar no WhatsApp")
+                Text("Compartilhar no WhatsApp", color = Color.White)
             }
         }
 
@@ -104,7 +111,7 @@ fun ShareOptions(message: String) {
                 }
                 context.startActivity(intent)
             }) {
-                Text("Compartilhar por E-mail")
+                Text("Compartilhar por E-mail", color = Color.White)
             }
         }
 
@@ -116,7 +123,7 @@ fun ShareOptions(message: String) {
                 }
                 context.startActivity(Intent.createChooser(intent, "Compartilhar via"))
             }) {
-                Text("Compartilhar")
+                Text("Compartilhar", color = Color.White)
             }
         }
     }
