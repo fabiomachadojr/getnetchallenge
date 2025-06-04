@@ -22,7 +22,7 @@ class HomeScreen : ComponentActivity() {
         }
     }
 
-    fun ComponentActivity.setupOnBackPressedToFinish() {
+    private fun ComponentActivity.setupOnBackPressedToFinish() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finish()

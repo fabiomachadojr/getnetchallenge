@@ -1,22 +1,41 @@
 package com.challenge.petnet.presentation.cart.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.challenge.petnet.core.extensions.toBigDecimalSafe
 import com.challenge.petnet.domain.model.CartItem
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
+
 
 class CartViewModel : ViewModel() {
 
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
     val cartItems: StateFlow<List<CartItem>> = _cartItems
 
-    private val _totalItems = MutableStateFlow(0)
-    val totalItems: StateFlow<Int> = _totalItems
+    val totalItems: StateFlow<Int> = _cartItems
+        .map { items -> items.sumOf { it.quantity } }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            initialValue = 0
+        )
 
-    private val _totalPrice = MutableStateFlow(BigDecimal.ZERO)
-    val totalPrice: StateFlow<BigDecimal> = _totalPrice
-
+    val totalPrice: StateFlow<BigDecimal> = _cartItems
+        .map { items ->
+            items.sumOf {
+                it.item.price.toBigDecimalSafe() * it.quantity.toBigDecimal()
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            initialValue = BigDecimal.ZERO
+        )
 
     fun addToCart(cartItem: CartItem) {
         val existing = _cartItems.value.find { it.item.id == cartItem.item.id }
@@ -27,24 +46,12 @@ class CartViewModel : ViewModel() {
         } else {
             _cartItems.value + cartItem
         }
-        updateTotals()
     }
 
     fun clearCart() {
         _cartItems.value = emptyList()
-        updateTotals()
     }
 
-    private fun updateTotals() {
-        _totalItems.value = _cartItems.value.sumOf { it.quantity }
-        _totalPrice.value = _cartItems.value.sumOf {
-            it.item.price
-                .replace("R$", "")
-                .replace(",", ".")
-                .trim()
-                .toBigDecimal() * it.quantity.toBigDecimal()
-        }
-    }
 
     fun buildSuccessMessage(): String {
         if (_cartItems.value.isEmpty()) return "Seu carrinho está vazio."
@@ -59,7 +66,7 @@ class CartViewModel : ViewModel() {
                 }\n"
             )
         }
-        sb.append("\nTotal: R$ ${"%.2f".format(_totalPrice.value)}")
+        sb.append("\nTotal: R$ ${"%.2f".format(totalPrice.value)}")
         return sb.toString()
     }
 

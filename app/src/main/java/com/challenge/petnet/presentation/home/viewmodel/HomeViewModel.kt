@@ -20,7 +20,7 @@ class HomeViewModel(private val getItemsUseCase: GetItemsUseCase) : ViewModel() 
         loadItems()
     }
 
-    fun loadItems() {
+    private fun loadItems() {
         viewModelScope.launch {
             _itemsState.value = UiState.Loading
             val result = getItemsUseCase()
@@ -32,7 +32,6 @@ class HomeViewModel(private val getItemsUseCase: GetItemsUseCase) : ViewModel() 
             )
         }
     }
-
 
     fun searchItems(query: String) {
         val filtered = if (query.isBlank()) {
