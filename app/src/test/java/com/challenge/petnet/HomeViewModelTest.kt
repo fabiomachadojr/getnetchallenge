@@ -1,0 +1,123 @@
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.challenge.petnet.core.ui.state.UiState
+import com.challenge.petnet.domain.model.Item
+import com.challenge.petnet.domain.usecase.GetItemsUseCase
+import com.challenge.petnet.presentation.home.viewmodel.HomeViewModel
+import io.mockk.coEvery
+import io.mockk.mockk
+import io.mockk.unmockkAll
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TestRule
+
+@ExperimentalCoroutinesApi
+class HomeViewModelTest {
+
+    @get:Rule
+    val instantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
+
+    private val testDispatcher = StandardTestDispatcher()
+
+    private lateinit var getItemsUseCase: GetItemsUseCase
+    private lateinit var viewModel: HomeViewModel
+
+    @Before
+    fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+        getItemsUseCase = mockk()
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+        unmockkAll()
+    }
+
+    @Test
+    fun `deve carregar itens com sucesso ao iniciar`() = runTest {
+        val mockItems = listOf(
+            Item("1", "Ração Premium", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"),
+            Item(
+                "2",
+                "Coleira Antipulgas",
+                "10",
+                "https://images.petz.com.br/fotos/1666985549004.jpg"
+            )
+        )
+
+        coEvery { getItemsUseCase() } returns Result.success(mockItems)
+
+        viewModel = HomeViewModel(getItemsUseCase)
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.itemsState.value
+        Assert.assertTrue(state is UiState.Success)
+        Assert.assertEquals(mockItems, (state as UiState.Success).data)
+    }
+
+    @Test
+    fun `deve retornar erro se falhar ao carregar`() = runTest {
+        val exception = Exception("Falha de rede")
+        coEvery { getItemsUseCase() } returns Result.failure(exception)
+
+        viewModel = HomeViewModel(getItemsUseCase)
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.itemsState.value
+        Assert.assertTrue(state is UiState.Error)
+        Assert.assertEquals("Falha de rede", (state as UiState.Error).message)
+    }
+
+    @Test
+    fun `searchItems com query em branco deve retornar todos os itens`() = runTest {
+        val items = listOf(
+            Item("1", "Banho", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"),
+            Item("2", "Tosa", "10", "https://images.petz.com.br/fotos/1666985549004.jpg")
+        )
+        coEvery { getItemsUseCase() } returns Result.success(items)
+
+        viewModel = HomeViewModel(getItemsUseCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.searchItems("")
+
+        val state = viewModel.itemsState.value
+        Assert.assertTrue(state is UiState.Success)
+        Assert.assertEquals(items, (state as UiState.Success).data)
+    }
+
+    @Test
+    fun `searchItems deve filtrar os itens corretamente`() = runTest {
+        val items = listOf(
+            Item(
+                "1",
+                "Banho para cachorro",
+                "10",
+                "https://images.petz.com.br/fotos/1666985549004.jpg"
+            ), Item(
+                "2", "Vacina para gato", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"
+            ), Item("3", "Ração", "10", "https://images.petz.com.br/fotos/1666985549004.jpg")
+        )
+        coEvery { getItemsUseCase() } returns Result.success(items)
+
+        viewModel = HomeViewModel(getItemsUseCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.searchItems("gato")
+
+        val state = viewModel.itemsState.value
+        Assert.assertTrue(state is UiState.Success)
+        Assert.assertEquals(listOf(items[1]), (state as UiState.Success).data)
+    }
+}
