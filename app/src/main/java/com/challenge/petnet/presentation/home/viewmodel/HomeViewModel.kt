@@ -37,7 +37,7 @@ class HomeViewModel(private val getItemsUseCase: GetItemsUseCase) : ViewModel() 
         val filtered = if (query.isBlank()) {
             allItems
         } else {
-            allItems.filter { it.description.contains(query, ignoreCase = true) }
+            allItems.filter { it.name.contains(query, ignoreCase = true) }
         }
         _itemsState.value = UiState.Success(filtered)
     }

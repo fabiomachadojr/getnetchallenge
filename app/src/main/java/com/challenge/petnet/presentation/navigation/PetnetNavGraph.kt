@@ -32,9 +32,9 @@ fun PetnetNavGraph(navController: NavHostController) {
 
             composable(
                 route = "${Routes.DETAIL}/{itemId}",
-                arguments = listOf(navArgument("itemId") { type = NavType.StringType })
+                arguments = listOf(navArgument("itemId") { type = NavType.IntType })
             ) { backStackEntry ->
-                val itemId = backStackEntry.arguments?.getString("itemId") ?: ""
+                val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
                 val cartViewModel = rememberCartViewModel(navController, backStackEntry)
 
                 ItemDetailScreen(

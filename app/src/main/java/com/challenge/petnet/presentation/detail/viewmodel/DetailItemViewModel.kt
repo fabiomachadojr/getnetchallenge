@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ItemDetailViewModel(
+class DetailItemViewModel(
     private val getDetailItemUseCase: GetDetailItemUseCase
 ) : ViewModel() {
 
     private val _itemState = MutableStateFlow<UiState<DetailItem>>(UiState.Loading)
     val itemState: StateFlow<UiState<DetailItem>> = _itemState
 
-    fun loadItem(id: String) {
+    fun loadItem(id: Int) {
         viewModelScope.launch {
             _itemState.value = UiState.Loading
             val result = getDetailItemUseCase(id)

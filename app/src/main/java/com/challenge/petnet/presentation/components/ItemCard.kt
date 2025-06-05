@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
 import coil.util.DebugLogger
+import com.challenge.petnet.core.extensions.toBrazilCurrency
 import com.challenge.petnet.domain.model.Item
 
 @Composable
@@ -57,7 +58,7 @@ fun ItemCard(
         ) {
             Image(
                 painter = rememberAsyncImagePainter(model = item.imageUrl, imageLoader = imageLoader),
-                contentDescription = item.description,
+                contentDescription = item.name,
                 modifier = Modifier
                     .size(80.dp)
                     .clip(RoundedCornerShape(8.dp))
@@ -69,7 +70,7 @@ fun ItemCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = item.description,
+                    text = item.name,
                     style = MaterialTheme.typography.bodySmall.copy(
                         lineHeight = 16.sp,
                         letterSpacing = 0.sp
@@ -87,7 +88,7 @@ fun ItemCard(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = item.price,
+                        text = item.price.toBrazilCurrency(),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimary
                     )

@@ -149,13 +149,13 @@ fun CartScreen(
                     Row(modifier = Modifier.padding(16.dp)) {
                         AsyncImage(
                             model = cartItem.item.imageUrl,
-                            contentDescription = cartItem.item.description,
+                            contentDescription = cartItem.item.name,
                             modifier = Modifier.size(64.dp)
                         )
                         Spacer(Modifier.width(16.dp))
                         Column {
                             Text(
-                                cartItem.item.description,
+                                cartItem.item.name,
                                 color = MaterialTheme.colorScheme.onPrimary,
                                 style = MaterialTheme.typography.bodyMedium,
                                 maxLines = 2

@@ -5,5 +5,5 @@ import com.challenge.petnet.domain.model.Item
 
 interface PetRepository {
     suspend fun getItems(): Result<List<Item>>
-    suspend fun getItemDetail(id: String): Result<DetailItem>
+    suspend fun getItemDetail(id: Int): Result<DetailItem>
 }

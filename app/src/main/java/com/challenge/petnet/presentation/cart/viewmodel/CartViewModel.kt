@@ -2,7 +2,6 @@ package com.challenge.petnet.presentation.cart.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.challenge.petnet.core.extensions.toBigDecimalSafe
 import com.challenge.petnet.domain.model.CartItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,7 +27,7 @@ class CartViewModel : ViewModel() {
     val totalPrice: StateFlow<BigDecimal> = _cartItems
         .map { items ->
             items.sumOf {
-                it.item.price.toBigDecimalSafe() * it.quantity.toBigDecimal()
+                it.item.price * it.quantity.toBigDecimal()
             }
         }
         .stateIn(
@@ -59,9 +58,9 @@ class CartViewModel : ViewModel() {
         val sb = StringBuilder("Compra realizada com sucesso!\n\nItens:\n")
         _cartItems.value.forEach {
             sb.append(
-                "- ${it.item.description} x${it.quantity} = R$ ${
+                "- ${it.item.name} x${it.quantity} = R$ ${
                     "%.2f".format(
-                        it.item.price.replace("R$", "").replace(",", ".").toDouble() * it.quantity
+                        it.item.price.toDouble() * it.quantity
                     )
                 }\n"
             )

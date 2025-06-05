@@ -33,19 +33,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.challenge.petnet.core.extensions.toBrazilCurrency
 import com.challenge.petnet.core.ui.state.UiState
 import com.challenge.petnet.core.ui.theme.AppColors
 import com.challenge.petnet.data.mapper.toItem
 import com.challenge.petnet.domain.model.CartItem
 import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
-import com.challenge.petnet.presentation.detail.viewmodel.ItemDetailViewModel
+import com.challenge.petnet.presentation.detail.viewmodel.DetailItemViewModel
 import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemDetailScreen(
-    itemId: String,
-    viewModel: ItemDetailViewModel = getViewModel(),
+    itemId: Int,
+    viewModel: DetailItemViewModel = getViewModel(),
     cartViewModel: CartViewModel,
     onBackClick: () -> Unit
 ) {
@@ -164,7 +165,7 @@ fun ItemDetailScreen(
                             Spacer(Modifier.height(16.dp))
                             Text(
                                 color = Color.Black,
-                                text = item.price,
+                                text = item.price.toBrazilCurrency(),
                                 style = MaterialTheme.typography.titleLarge
                             )
                             Spacer(Modifier.height(16.dp))

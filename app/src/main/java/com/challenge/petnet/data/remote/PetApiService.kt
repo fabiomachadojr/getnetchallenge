@@ -11,5 +11,5 @@ interface PetApiService {
     suspend fun getItems(): List<ItemResponse>
 
     @GET("item/{id}")
-    suspend fun getItemDetail(@Path("id") id: String): DetailItemResponse
+    suspend fun getItemDetail(@Path("id") id: Int): DetailItemResponse
 }

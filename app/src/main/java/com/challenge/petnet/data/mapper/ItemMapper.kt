@@ -7,7 +7,7 @@ import com.challenge.petnet.domain.model.Item
 fun ItemResponse.toItem(): Item {
     return Item(
         id = id,
-        description = description,
+        name = name,
         price = price,
         imageUrl = imageUrl
     )
@@ -16,7 +16,7 @@ fun ItemResponse.toItem(): Item {
 fun DetailItem.toItem(): Item {
     return Item(
         id = id,
-        description = description,
+        name = description,
         price = price,
         imageUrl = imageUrl
     )

@@ -25,7 +25,7 @@ class PetRepositoryImpl(
         }
     }
 
-    override suspend fun getItemDetail(id: String): Result<DetailItem> {
+    override suspend fun getItemDetail(id: Int): Result<DetailItem> {
         return try {
             val response = api.getItemDetail(id)
             Result.success(response.toDetailItem())

@@ -43,7 +43,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `deve carregar itens com sucesso ao iniciar`() = runTest {
+    fun `when ViewModel is initialized, should load items successfully`() = runTest {
         val mockItems = listOf(
             Item("1", "Ração Premium", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"),
             Item(
@@ -66,7 +66,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `deve retornar erro se falhar ao carregar`() = runTest {
+    fun `when ViewModel fails to load items, should emit error state`() = runTest {
         val exception = Exception("Falha de rede")
         coEvery { getItemsUseCase() } returns Result.failure(exception)
 
@@ -80,7 +80,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `searchItems com query em branco deve retornar todos os itens`() = runTest {
+    fun `when searchItems is called with blank query, should return all items`() = runTest {
         val items = listOf(
             Item("1", "Banho", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"),
             Item("2", "Tosa", "10", "https://images.petz.com.br/fotos/1666985549004.jpg")
@@ -98,7 +98,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `searchItems deve filtrar os itens corretamente`() = runTest {
+    fun `when searchItems is called with a query, should return filtered items`() = runTest {
         val items = listOf(
             Item(
                 "1",
