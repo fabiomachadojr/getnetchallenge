@@ -30,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.challenge.petnet.R
 import com.challenge.petnet.core.extensions.toBrazilCurrency
 import com.challenge.petnet.core.ui.state.UiState
 import com.challenge.petnet.domain.model.Item
@@ -55,7 +57,6 @@ fun HomeContent(
     val totalItems by cartViewModel.totalItems.collectAsState()
     val totalPrice by cartViewModel.totalPrice.collectAsState()
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,7 +76,7 @@ fun HomeContent(
                 searchQuery = newValue
                 viewModel.searchItems(newValue)
             },
-            placeholder = { Text("Buscar") },
+            placeholder = { Text(stringResource(id = R.string.home_search_placeholder)) },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -135,7 +136,11 @@ fun HomeContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "TOTAL:\n ${totalPrice.toBrazilCurrency()}",
+                    text = String.format(
+                        stringResource(id = R.string.home_total_price_format),
+                        stringResource(id = R.string.home_total_label),
+                        totalPrice.toBrazilCurrency()
+                    ),
                     color = Color.White,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -153,3 +158,4 @@ fun HomeContent(
         }
     }
 }
+

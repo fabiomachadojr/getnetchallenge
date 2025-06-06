@@ -30,9 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.challenge.petnet.R
+import com.challenge.petnet.core.extensions.formatWeight
 import com.challenge.petnet.core.extensions.toBrazilCurrency
 import com.challenge.petnet.core.ui.state.UiState
 import com.challenge.petnet.core.ui.theme.AppColors
@@ -71,7 +74,7 @@ fun ItemDetailScreen(
                     Text(text = error, color = Color.Red)
                     Spacer(Modifier.height(8.dp))
                     Button(onClick = { viewModel.loadItem(itemId) }) {
-                        Text("Tentar novamente")
+                        Text(stringResource(R.string.item_detail_retry))
                     }
                 }
             }
@@ -86,7 +89,7 @@ fun ItemDetailScreen(
                     CenterAlignedTopAppBar(
                         title = {
                             Text(
-                                text = "Detalhes do item",
+                                text = stringResource(R.string.item_detail_title),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         },
@@ -94,7 +97,7 @@ fun ItemDetailScreen(
                             IconButton(onClick = onBackClick) {
                                 Icon(
                                     Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Voltar"
+                                    contentDescription = stringResource(R.string.item_detail_back)
                                 )
                             }
                         },
@@ -120,7 +123,7 @@ fun ItemDetailScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Adicionar", color = Color.White
+                            text = stringResource(R.string.item_detail_add), color = Color.White
                         )
                     }
                 },
@@ -156,7 +159,7 @@ fun ItemDetailScreen(
 
                             Text(
                                 color = Color.Black,
-                                text = item.description,
+                                text = item.name,
                                 style = MaterialTheme.typography.headlineSmall.copy(
                                     lineHeight = 24.sp,
                                     letterSpacing = 0.sp
@@ -171,21 +174,19 @@ fun ItemDetailScreen(
                             Spacer(Modifier.height(16.dp))
                             Text(
                                 color = Color.Black,
-                                text = "- Com capacidade significativa de armazenamento de água;\n" +
-                                        "- Fabricado em plástico resistente, leve e fácil de transportar;\n" +
-                                        "- Prático, higiênico e combina com a decoração do ambiente;",
+                                text = item.description,
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Spacer(Modifier.height(4.dp))
                             Text(
                                 color = Color.Black,
-                                text = "Peso: 900g",
+                                text = "${stringResource(R.string.item_detail_weight)} ${item.weight.formatWeight()}",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Spacer(Modifier.height(4.dp))
                             Text(
                                 color = Color.Black,
-                                text = "Dimensão: 100x70x200",
+                                text = "${stringResource(R.string.item_detail_dimension)} ${item.dimensions}",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }

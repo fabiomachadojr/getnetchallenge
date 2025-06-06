@@ -32,8 +32,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.challenge.petnet.R
 import com.challenge.petnet.core.extensions.toBrazilCurrency
 import com.challenge.petnet.core.ui.theme.AppColors
 import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
@@ -54,7 +56,7 @@ fun CartScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Meu carrinho(${totalItems})",
+                        text = stringResource(id = R.string.cart_title, totalItems),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 },
@@ -62,7 +64,7 @@ fun CartScreen(
                     IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar"
+                            contentDescription = stringResource(id = R.string.cart_back)
                         )
                     }
                 },
@@ -72,7 +74,7 @@ fun CartScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
-                            contentDescription = "Limpar carrinho",
+                            contentDescription = stringResource(id = R.string.cart_clear),
                             tint = Color.White
                         )
                     }
@@ -98,7 +100,7 @@ fun CartScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Total:",
+                        stringResource(id = R.string.cart_total),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
@@ -126,7 +128,7 @@ fun CartScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Finalizar", color = Color.White
+                        text = stringResource(id = R.string.cart_finish), color = Color.White
                     )
                 }
             }
@@ -162,17 +164,19 @@ fun CartScreen(
                             )
                             Spacer(Modifier.height(4.dp))
                             Row(
-                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    "Quantidade: ${cartItem.quantity}",
+                                    "${stringResource(id = R.string.cart_quantity)} ${cartItem.quantity}",
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                                 Text(
-                                    totalPrice.toBrazilCurrency(),
+                                    viewModel.calculateItemTotal(cartItem).toBrazilCurrency(),
                                     color = MaterialTheme.colorScheme.onPrimary,
                                     style = MaterialTheme.typography.titleMedium
                                 )

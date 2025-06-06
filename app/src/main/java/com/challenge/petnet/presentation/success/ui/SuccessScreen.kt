@@ -40,7 +40,7 @@ fun SuccessScreen(message: String, onBackToHome: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 72.dp), // espaço para o botão
+                .padding(bottom = 72.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

@@ -6,36 +6,37 @@
     <string name="common_clear">Limpar carrinho</string>
     <string name="common_retry">Tentar novamente</string>
 
+    <!-- Home Screen -->
+    <string name="home_search_placeholder">Buscar</string>
+    <string name="home_total_label">TOTAL:</string>
+    <string name="home_total_price_format">%1$s\n%2$s</string>
+
     <!-- Item Detail Screen -->
     <string name="item_detail_title">Detalhes do item</string>
-    <string name="item_detail_button_add">Adicionar</string>
-    <string name="item_detail_weight">Peso: %1$s</string>
-    <string name="item_detail_dimensions">Dimensão: %1$s</string>
-    <string name="item_detail_description_bullets">
-        - Com capacidade significativa de armazenamento de água;&#10;- Fabricado em plástico resistente, leve e fácil de transportar;&#10;- Prático, higiênico e combina com a decoração do ambiente;
-    </string>
+    <string name="item_detail_back">Voltar</string>
+    <string name="item_detail_retry">Tentar novamente</string>
+    <string name="item_detail_add">Adicionar</string>
+    <string name="item_detail_weight">Peso:</string>
+    <string name="item_detail_dimension">Dimensão:</string>
 
     <!-- Cart Screen -->
     <string name="cart_title">Meu carrinho(%1$d)</string>
+    <string name="cart_back">Voltar</string>
+    <string name="cart_clear">Limpar carrinho</string>
     <string name="cart_total">Total:</string>
-    <string name="cart_button_finish">Finalizar</string>
-    <string name="cart_message_empty">Seu carrinho está vazio</string>
-    <string name="cart_empty">Seu carrinho está vazio.</string>
-    <string name="cart_success_header">Compra realizada com sucesso!</string>
-    <string name="cart_success_items">Itens:</string>
-    <string name="cart_item_line">- %1$s x%2$d = R$ %3$s</string>
-    <string name="cart_success_total">Total: R$ %1$s</string>
+    <string name="cart_finish">Finalizar</string>
+    <string name="cart_quantity">Quantidade:</string>
 
     <!-- SuccessScreen -->
-    <string name="success_icon_content_description">Sucesso</string>
-    <string name="success_message_title">Pedido realizado com sucesso!</string>
-    <string name="success_close_button">Fechar</string>
+    <string name="success_icon_description">Sucesso</string>
+    <string name="success_message">Pedido realizado com sucesso!</string>
+    <string name="success_close">Fechar</string>
 
     <!-- ShareOptions -->
     <string name="share_whatsapp">Compartilhar no WhatsApp</string>
     <string name="share_email">Compartilhar por E-mail</string>
-    <string name="share_generic">Compartilhar</string>
     <string name="share_email_subject">Pedido Petnet</string>
-    <string name="share_chooser_title">Compartilhar via</string>
+    <string name="share_generic">Compartilhar</string>
+    <string name="share_generic_chooser">Compartilhar via</string>
 
 </resources>

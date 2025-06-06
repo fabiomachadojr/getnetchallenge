@@ -36,6 +36,10 @@ class CartViewModel : ViewModel() {
             initialValue = BigDecimal.ZERO
         )
 
+    fun calculateItemTotal(cartItem: CartItem): BigDecimal {
+        return cartItem.item.price * cartItem.quantity.toBigDecimal()
+    }
+
     fun addToCart(cartItem: CartItem) {
         val existing = _cartItems.value.find { it.item.id == cartItem.item.id }
         _cartItems.value = if (existing != null) {
@@ -53,8 +57,6 @@ class CartViewModel : ViewModel() {
 
 
     fun buildSuccessMessage(): String {
-        if (_cartItems.value.isEmpty()) return "Seu carrinho está vazio."
-
         val sb = StringBuilder("Compra realizada com sucesso!\n\nItens:\n")
         _cartItems.value.forEach {
             sb.append(
