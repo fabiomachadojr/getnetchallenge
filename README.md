@@ -30,6 +30,5 @@ O projeto segue o padrão Clean Architecture com MVVM, separando claramente cama
 
 - A tela inicial (Home) exibe uma lista com informações resumidas dos produtos (nome, imagem e preço).  
   Ao clicar em um item, uma nova requisição é realizada para obter os detalhes completos, como descrição, dimensões, peso etc.
-
-- Essa decisão otimiza o carregamento inicial e melhora a performance.  
+  Essa decisão otimiza o carregamento inicial e melhora a performance.  
   É interessante implementar paginaçãon futura para lidar melhor com listas grandes e garantir fluidez.
