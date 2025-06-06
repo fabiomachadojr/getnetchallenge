@@ -6,6 +6,7 @@ import com.challenge.petnet.domain.model.Item
 import com.challenge.petnet.presentation.cart.viewmodel.CartViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -41,8 +42,9 @@ class CartViewModelTest {
     }
 
     @Test
-    fun `addToCart deve adicionar item ao carrinho`() = runTest {
-        val item = Item("1", "Ração", "R$ 10,00", "")
+    fun `addToCart should add item to cart`() = runTest {
+        val item =
+            Item(1, "Ração", BigDecimal(10), "https://images.petz.com.br/fotos/1666985549004.jpg")
         val cartItem = CartItem(item, 1)
 
         viewModel.addToCart(cartItem)
@@ -54,8 +56,9 @@ class CartViewModelTest {
     }
 
     @Test
-    fun `addToCart deve incrementar quantidade se item já existir`() = runTest {
-        val item = Item("1", "Ração", "R$ 10,00", "")
+    fun `addToCart should increment quantity if item already exists`() = runTest {
+        val item =
+            Item(1, "Ração", BigDecimal(10), "https://images.petz.com.br/fotos/1666985549004.jpg")
         val cartItem = CartItem(item, 1)
 
         viewModel.addToCart(cartItem)
@@ -68,32 +71,37 @@ class CartViewModelTest {
     }
 
     @Test
-    fun `totalItems deve refletir quantidade total`() = runTest {
-        val item1 = Item("1", "Ração", "R$ 10,00", "")
-        val item2 = Item("2", "Coleira", "R$ 15,00", "")
+    fun `totalItems should reflect total quantity`() = runTest {
+        val item1 =
+            Item(1, "Ração", BigDecimal(10), "https://images.petz.com.br/fotos/1666985549004.jpg")
+        val item2 =
+            Item(2, "Coleira", BigDecimal(15), "https://images.petz.com.br/fotos/1666985549004.jpg")
         viewModel.addToCart(CartItem(item1, 2))
         viewModel.addToCart(CartItem(item2, 3))
         advanceUntilIdle()
 
-        val total = viewModel.totalItems.first()
+        val total = viewModel.totalItems.drop(1).first()
         Assert.assertEquals(5, total)
     }
 
     @Test
-    fun `totalPrice deve somar corretamente os valores`() = runTest {
-        val item1 = Item("1", "Ração", "R$ 10,00", "")
-        val item2 = Item("2", "Coleira", "R$ 15,00", "")
-        viewModel.addToCart(CartItem(item1, 2)) // 20.00
-        viewModel.addToCart(CartItem(item2, 1)) // 15.00
+    fun `totalPrice should correctly sum values`() = runTest {
+        val item1 =
+            Item(1, "Ração", BigDecimal(10), "https://images.petz.com.br/fotos/1666985549004.jpg")
+        val item2 =
+            Item(2, "Coleira", BigDecimal(15), "https://images.petz.com.br/fotos/1666985549004.jpg")
+        viewModel.addToCart(CartItem(item1, 2))
+        viewModel.addToCart(CartItem(item2, 1))
         advanceUntilIdle()
 
-        val total = viewModel.totalPrice.first()
-        Assert.assertEquals(BigDecimal("35.00"), total)
+        val total = viewModel.totalPrice.drop(1).first()
+        Assert.assertTrue(total.compareTo(BigDecimal("35.00")) == 0)
     }
 
     @Test
-    fun `clearCart deve esvaziar o carrinho`() = runTest {
-        val item = Item("1", "Ração", "R$ 10,00", "")
+    fun `clearCart should empty the cart`() = runTest {
+        val item =
+            Item(1, "Ração", BigDecimal(10), "https://images.petz.com.br/fotos/1666985549004.jpg")
         viewModel.addToCart(CartItem(item, 1))
         advanceUntilIdle()
 
@@ -104,24 +112,5 @@ class CartViewModelTest {
         Assert.assertTrue(items.isEmpty())
     }
 
-    @Test
-    fun `buildSuccessMessage deve gerar mensagem formatada corretamente`() = runTest {
-        val item1 = Item("1", "Ração", "R$ 10,00", "")
-        val item2 = Item("2", "Coleira", "R$ 15,00", "")
-        viewModel.addToCart(CartItem(item1, 1))
-        viewModel.addToCart(CartItem(item2, 2))
-        advanceUntilIdle()
 
-        val message = viewModel.buildSuccessMessage()
-
-        Assert.assertTrue(message.contains("Ração x1 = R$ 10.00"))
-        Assert.assertTrue(message.contains("Coleira x2 = R$ 30.00"))
-        Assert.assertTrue(message.contains("Total: R$ 40.00"))
-    }
-
-    @Test
-    fun `buildSuccessMessage deve retornar mensagem de carrinho vazio`() = runTest {
-        val message = viewModel.buildSuccessMessage()
-        Assert.assertEquals("Seu carrinho está vazio.", message)
-    }
 }

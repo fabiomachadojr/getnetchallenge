@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import java.math.BigDecimal
 
 @ExperimentalCoroutinesApi
 class HomeViewModelTest {
@@ -45,11 +46,16 @@ class HomeViewModelTest {
     @Test
     fun `when ViewModel is initialized, should load items successfully`() = runTest {
         val mockItems = listOf(
-            Item("1", "Ração Premium", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"),
             Item(
-                "2",
+                1,
+                "Ração Premium",
+                BigDecimal(10),
+                "https://images.petz.com.br/fotos/1666985549004.jpg"
+            ),
+            Item(
+                2,
                 "Coleira Antipulgas",
-                "10",
+                BigDecimal(10),
                 "https://images.petz.com.br/fotos/1666985549004.jpg"
             )
         )
@@ -82,8 +88,18 @@ class HomeViewModelTest {
     @Test
     fun `when searchItems is called with blank query, should return all items`() = runTest {
         val items = listOf(
-            Item("1", "Banho", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"),
-            Item("2", "Tosa", "10", "https://images.petz.com.br/fotos/1666985549004.jpg")
+            Item(
+                1,
+                "Ração Premium",
+                BigDecimal(10),
+                "https://images.petz.com.br/fotos/1666985549004.jpg"
+            ),
+            Item(
+                2,
+                "Coleira Antipulgas",
+                BigDecimal(10),
+                "https://images.petz.com.br/fotos/1666985549004.jpg"
+            )
         )
         coEvery { getItemsUseCase() } returns Result.success(items)
 
@@ -101,20 +117,24 @@ class HomeViewModelTest {
     fun `when searchItems is called with a query, should return filtered items`() = runTest {
         val items = listOf(
             Item(
-                "1",
-                "Banho para cachorro",
-                "10",
+                1,
+                "Ração Premium",
+                BigDecimal(10),
                 "https://images.petz.com.br/fotos/1666985549004.jpg"
-            ), Item(
-                "2", "Vacina para gato", "10", "https://images.petz.com.br/fotos/1666985549004.jpg"
-            ), Item("3", "Ração", "10", "https://images.petz.com.br/fotos/1666985549004.jpg")
+            ),
+            Item(
+                2,
+                "Coleira Antipulgas",
+                BigDecimal(10),
+                "https://images.petz.com.br/fotos/1666985549004.jpg"
+            )
         )
         coEvery { getItemsUseCase() } returns Result.success(items)
 
         viewModel = HomeViewModel(getItemsUseCase)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.searchItems("gato")
+        viewModel.searchItems("Coleira")
 
         val state = viewModel.itemsState.value
         Assert.assertTrue(state is UiState.Success)

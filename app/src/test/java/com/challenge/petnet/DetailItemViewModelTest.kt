@@ -20,6 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
+import java.math.BigDecimal
 
 @ExperimentalCoroutinesApi
 class DetailItemViewModelTest {
@@ -50,16 +51,16 @@ class DetailItemViewModelTest {
             id = 1,
             name = "Ração",
             description = "Comida saudável para cães",
-            price = "10",
-            weight = "10",
+            price = BigDecimal(10),
+            weight = BigDecimal(0.5),
             dimensions = "10",
             imageUrl = "https://images.petz.com.br/fotos/1666985549004.jpg"
         )
-        coEvery { getDetailItemUseCase("1") } returns Result.success(mockDetailItem)
+        coEvery { getDetailItemUseCase(1) } returns Result.success(mockDetailItem)
 
         viewModel = DetailItemViewModel(getDetailItemUseCase)
 
-        viewModel.loadItem("1")
+        viewModel.loadItem(1)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.itemState.value
@@ -70,11 +71,11 @@ class DetailItemViewModelTest {
     @Test
     fun `when loadItem fails, should emit Error state`() = runTest {
         val exception = Exception("Falha ao carregar detalhes")
-        coEvery { getDetailItemUseCase("2") } returns Result.failure(exception)
+        coEvery { getDetailItemUseCase(2) } returns Result.failure(exception)
 
         viewModel = DetailItemViewModel(getDetailItemUseCase)
 
-        viewModel.loadItem("2")
+        viewModel.loadItem(2)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.itemState.value
@@ -84,13 +85,13 @@ class DetailItemViewModelTest {
 
     @Test
     fun `when loadItem is called, should emit Loading state first`() = runTest {
-        coEvery { getDetailItemUseCase("3") } returns Result.success(
+        coEvery { getDetailItemUseCase(3) } returns Result.success(
             DetailItem(
                 id = 3,
                 name = "Ração",
                 description = "Comida saudável para cães",
-                price = "10",
-                weight = "10",
+                price = BigDecimal(10),
+                weight = BigDecimal(0.5),
                 dimensions = "10",
                 imageUrl = "https://images.petz.com.br/fotos/1666985549004.jpg"
             )
@@ -98,7 +99,7 @@ class DetailItemViewModelTest {
 
         viewModel = DetailItemViewModel(getDetailItemUseCase)
 
-        viewModel.loadItem("3")
+        viewModel.loadItem(3)
 
         Assert.assertEquals(UiState.Loading, viewModel.itemState.value)
 
